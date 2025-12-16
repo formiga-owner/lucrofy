@@ -11,7 +11,8 @@ import {
   Menu,
   X,
   Sparkles,
-  Lightbulb
+  Lightbulb,
+  Boxes
 } from 'lucide-react';
 import { useState } from 'react';
 
@@ -22,6 +23,7 @@ interface LayoutProps {
 const navItems = [
   { path: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
   { path: '/products', label: 'Produtos', icon: Package },
+  { path: '/inventory', label: 'Estoque', icon: Boxes },
   { path: '/simulator', label: 'Simulador', icon: Calculator },
   { path: '/predictability', label: 'Previsibilidade', icon: TrendingUp },
   { path: '/insights', label: 'Insights', icon: Lightbulb },

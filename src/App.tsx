@@ -8,6 +8,7 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Dashboard from "./pages/Dashboard";
 import Products from "./pages/Products";
+import Inventory from "./pages/Inventory";
 import Simulator from "./pages/Simulator";
 import Predictability from "./pages/Predictability";
 import Insights from "./pages/Insights";
@@ -65,6 +66,7 @@ const AppRoutes = () => {
       <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
       <Route path="/products" element={<ProtectedRoute><Products /></ProtectedRoute>} />
       <Route path="/products/new" element={<ProtectedRoute><Products /></ProtectedRoute>} />
+      <Route path="/inventory" element={<ProtectedRoute><Inventory /></ProtectedRoute>} />
       <Route path="/simulator" element={<ProtectedRoute><Simulator /></ProtectedRoute>} />
       <Route path="/predictability" element={<ProtectedRoute><Predictability /></ProtectedRoute>} />
       <Route path="/insights" element={<ProtectedRoute><Insights /></ProtectedRoute>} />
