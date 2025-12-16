@@ -10,7 +10,8 @@ import {
   LogOut,
   Menu,
   X,
-  Sparkles
+  Sparkles,
+  Lightbulb
 } from 'lucide-react';
 import { useState } from 'react';
 
@@ -23,6 +24,7 @@ const navItems = [
   { path: '/products', label: 'Produtos', icon: Package },
   { path: '/simulator', label: 'Simulador', icon: Calculator },
   { path: '/predictability', label: 'Previsibilidade', icon: TrendingUp },
+  { path: '/insights', label: 'Insights', icon: Lightbulb },
 ];
 
 export const Layout = ({ children }: LayoutProps) => {
