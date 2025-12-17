@@ -9,10 +9,10 @@ import Register from "./pages/Register";
 import Dashboard from "./pages/Dashboard";
 import Products from "./pages/Products";
 import Inventory from "./pages/Inventory";
-import Simulator from "./pages/Simulator";
-import Predictability from "./pages/Predictability";
+import Simulations from "./pages/Simulations";
 import Insights from "./pages/Insights";
 import NotFound from "./pages/NotFound";
+import { Layout } from "./components/Layout";
 
 const queryClient = new QueryClient();
 
@@ -67,8 +67,9 @@ const AppRoutes = () => {
       <Route path="/products" element={<ProtectedRoute><Products /></ProtectedRoute>} />
       <Route path="/products/new" element={<ProtectedRoute><Products /></ProtectedRoute>} />
       <Route path="/inventory" element={<ProtectedRoute><Inventory /></ProtectedRoute>} />
-      <Route path="/simulator" element={<ProtectedRoute><Simulator /></ProtectedRoute>} />
-      <Route path="/predictability" element={<ProtectedRoute><Predictability /></ProtectedRoute>} />
+      <Route path="/simulations" element={<ProtectedRoute><Layout><Simulations /></Layout></ProtectedRoute>} />
+      <Route path="/simulator" element={<Navigate to="/simulations" replace />} />
+      <Route path="/predictability" element={<Navigate to="/simulations" replace />} />
       <Route path="/insights" element={<ProtectedRoute><Insights /></ProtectedRoute>} />
       
       {/* Catch-all */}
