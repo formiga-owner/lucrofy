@@ -32,9 +32,9 @@ const PainPointsSection = () => {
           Isso parece com o seu dia a dia?
         </h2>
         <p className="text-muted-foreground text-center mb-12 max-w-2xl mx-auto">
-          Se você se identificou com algum desses problemas, o LucroFácil foi feito para você.
+          Se você se identificou com algum desses problemas, o LucroFy foi feito para você.
         </p>
-        
+
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {painPoints.map((point, index) => (
             <Card key={index} className="border-border/50 shadow-soft hover:shadow-md transition-shadow bg-card">

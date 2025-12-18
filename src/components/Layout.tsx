@@ -9,9 +9,9 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { 
-  LayoutDashboard, 
-  Package, 
+import {
+  LayoutDashboard,
+  Package,
   LogOut,
   Menu,
   X,
@@ -66,7 +66,7 @@ export const Layout = ({ children }: LayoutProps) => {
             <div className="w-8 h-8 rounded-lg gradient-primary flex items-center justify-center">
               <Sparkles className="w-5 h-5 text-primary-foreground" />
             </div>
-            <span className="text-xl font-bold gradient-text">LucroFácil</span>
+            <span className="text-xl font-bold gradient-text">LucroFy</span>
           </Link>
 
           {/* Desktop Navigation */}
@@ -161,12 +161,11 @@ export const Layout = ({ children }: LayoutProps) => {
           {mobileNavItems.map(({ path, label, icon: Icon }) => {
             const isActive = location.pathname === path;
             return (
-              <Link 
-                key={path} 
+              <Link
+                key={path}
                 to={path}
-                className={`flex flex-col items-center justify-center gap-1 px-3 py-2 rounded-lg transition-colors ${
-                  isActive ? 'text-primary' : 'text-muted-foreground'
-                }`}
+                className={`flex flex-col items-center justify-center gap-1 px-3 py-2 rounded-lg transition-colors ${isActive ? 'text-primary' : 'text-muted-foreground'
+                  }`}
               >
                 <Icon className="w-5 h-5" />
                 <span className="text-xs font-medium">{label}</span>
@@ -177,7 +176,7 @@ export const Layout = ({ children }: LayoutProps) => {
       </nav>
 
       {/* Floating Action Button - Simulations (Mobile) */}
-      <Link 
+      <Link
         to="/simulations"
         className="md:hidden fixed bottom-20 right-4 z-50 w-14 h-14 rounded-full gradient-primary shadow-glow flex items-center justify-center"
       >

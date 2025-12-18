@@ -15,13 +15,13 @@ const OfferSection = () => {
         <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-6">
           Teste sem risco. Decida com dados.
         </h2>
-        
+
         <p className="text-lg text-muted-foreground mb-8 max-w-2xl mx-auto">
-          Teste o LucroFácil com todas as funcionalidades liberadas por 30 dias.
+          Teste o LucroFy com todas as funcionalidades liberadas por 30 dias.
           <br />
           <strong className="text-foreground">É por nossa conta.</strong>
         </p>
-        
+
         <div className="flex flex-wrap items-center justify-center gap-6 mb-10">
           {benefits.map((benefit, index) => (
             <div key={index} className="flex items-center gap-2">
@@ -32,10 +32,10 @@ const OfferSection = () => {
             </div>
           ))}
         </div>
-        
+
         <Link to="/register">
           <Button size="lg" className="text-lg px-8 py-6 bg-primary hover:bg-primary/90 shadow-glow">
-            QUERO TESTAR GRÁTIS POR 30 DIAS
+            QUERO Testar POR 30 DIAS
             <ArrowRight className="ml-2 w-5 h-5" />
           </Button>
         </Link>

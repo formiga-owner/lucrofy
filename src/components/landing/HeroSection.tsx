@@ -10,30 +10,39 @@ const HeroSection = () => {
           <CheckCircle className="w-4 h-4" />
           30 dias grátis para testar
         </div>
-        
+
         <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-foreground leading-tight mb-6">
           Pare de trabalhar de graça.{' '}
           <span className="gradient-text">Saiba exatamente quanto você lucra</span>{' '}
           em cada venda.
         </h1>
-        
+
         <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-8">
-          O LucroFácil é a ferramenta de inteligência financeira feita para pequenos empresários 
+          O LucroFy é a ferramenta de inteligência financeira feita para pequenos empresários
           que cansaram de planilhas complexas. Tenha previsibilidade total do seu negócio em minutos.
         </p>
-        
+
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-6">
           <Link to="/register">
             <Button size="lg" className="w-full sm:w-auto text-lg px-8 py-6 bg-primary hover:bg-primary/90 shadow-glow">
-              QUERO TESTAR GRÁTIS POR 30 DIAS
+              QUERO Testar POR 30 DIAS
               <ArrowRight className="ml-2 w-5 h-5" />
             </Button>
           </Link>
         </div>
-        
-        <p className="text-sm text-muted-foreground">
+
+        <p className="text-sm text-muted-foreground mb-12">
           Sem cartão de crédito • Cancele quando quiser
         </p>
+
+        <div className="relative w-full max-w-5xl mx-auto perspective-1000">
+          <div className="absolute inset-0 bg-primary/20 blur-3xl opacity-30 rounded-full transform scale-90" />
+          <img
+            src="/hero-dashboard.png"
+            alt="Dashboard LucroFy"
+            className="relative rounded-xl shadow-2xl border border-white/10 w-full transform hover:scale-[1.01] transition-transform duration-500"
+          />
+        </div>
       </div>
     </section>
   );

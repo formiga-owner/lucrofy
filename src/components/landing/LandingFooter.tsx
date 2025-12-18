@@ -10,9 +10,9 @@ const LandingFooter = () => {
             <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center">
               <TrendingUp className="w-5 h-5 text-primary-foreground" />
             </div>
-            <span className="text-xl font-bold text-foreground">LucroFácil</span>
+            <span className="text-xl font-bold text-foreground">LucroFy</span>
           </div>
-          
+
           <nav className="flex items-center gap-6 text-sm">
             <Link to="/termos" className="text-muted-foreground hover:text-foreground transition-colors">
               Termos
@@ -25,13 +25,13 @@ const LandingFooter = () => {
             </Link>
           </nav>
         </div>
-        
+
         <div className="mt-8 pt-6 border-t border-border text-center">
           <p className="text-sm text-muted-foreground">
-            LucroFácil — previsibilidade e controle para pequenos negócios.
+            LucroFy — previsibilidade e controle para pequenos negócios.
           </p>
           <p className="text-xs text-muted-foreground mt-2">
-            © {new Date().getFullYear()} LucroFácil. Todos os direitos reservados.
+            © {new Date().getFullYear()} LucroFy. Todos os direitos reservados.
           </p>
         </div>
       </div>

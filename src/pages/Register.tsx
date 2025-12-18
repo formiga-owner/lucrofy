@@ -19,7 +19,7 @@ const Register = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!name || !email || !password || !confirmPassword) {
       toast({
         title: "Campos obrigatórios",
@@ -54,7 +54,7 @@ const Register = () => {
     if (success) {
       toast({
         title: "Conta criada!",
-        description: "Bem-vindo ao LucroFácil.",
+        description: "Bem-vindo ao LucroFy.",
       });
       navigate('/dashboard');
     } else {
@@ -74,7 +74,7 @@ const Register = () => {
           <div className="w-16 h-16 mx-auto rounded-2xl gradient-primary flex items-center justify-center shadow-glow">
             <Sparkles className="w-8 h-8 text-primary-foreground" />
           </div>
-          <h1 className="text-3xl font-bold gradient-text">LucroFácil</h1>
+          <h1 className="text-3xl font-bold gradient-text">LucroFy</h1>
           <p className="text-muted-foreground">Crie sua conta gratuita</p>
         </div>
 

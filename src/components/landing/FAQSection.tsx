@@ -8,7 +8,7 @@ import {
 const faqs = [
   {
     question: 'Eu não entendo nada de finanças, vou conseguir usar?',
-    answer: 'Sim! O LucroFácil foi desenhado para ser intuitivo, sem termos técnicos difíceis. É como ter um assistente financeiro que fala a sua língua.',
+    answer: 'Sim! O LucroFy foi desenhado para ser intuitivo, sem termos técnicos difíceis. É como ter um assistente financeiro que fala a sua língua.',
   },
   {
     question: 'Meus dados estão seguros?',
@@ -20,7 +20,7 @@ const faqs = [
   },
   {
     question: 'Posso usar no celular?',
-    answer: 'Sim! O LucroFácil funciona perfeitamente em qualquer dispositivo - computador, tablet ou celular.',
+    answer: 'Sim! O LucroFy funciona perfeitamente em qualquer dispositivo - computador, tablet ou celular.',
   },
 ];
 
@@ -34,12 +34,12 @@ const FAQSection = () => {
         <p className="text-muted-foreground text-center mb-12">
           Respostas rápidas para as perguntas mais comuns.
         </p>
-        
+
         <Accordion type="single" collapsible className="space-y-4">
           {faqs.map((faq, index) => (
-            <AccordionItem 
-              key={index} 
-              value={`item-${index}`} 
+            <AccordionItem
+              key={index}
+              value={`item-${index}`}
               className="bg-card border border-border/50 rounded-xl px-6 shadow-soft"
             >
               <AccordionTrigger className="text-left font-semibold text-foreground hover:no-underline py-5">
