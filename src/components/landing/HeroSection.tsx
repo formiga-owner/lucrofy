@@ -25,7 +25,13 @@ const HeroSection = () => {
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-6">
           <Link to="/register">
             <Button size="lg" className="w-full sm:w-auto text-lg px-8 py-6 bg-primary hover:bg-primary/90 shadow-glow">
-              QUERO Testar POR 30 DIAS
+              Testar
+              <ArrowRight className="ml-2 w-5 h-5" />
+            </Button>
+          </Link>
+          <Link to="/pricing">
+            <Button size="lg" className="w-full sm:w-auto text-lg px-8 py-6 bg-blue-600 hover:bg-blue-700 shadow-glow text-white">
+              Planos
               <ArrowRight className="ml-2 w-5 h-5" />
             </Button>
           </Link>

@@ -13,6 +13,7 @@ import Products from "./pages/Products";
 import Inventory from "./pages/Inventory";
 import Simulations from "./pages/Simulations";
 import Insights from "./pages/Insights";
+import Pricing from "./pages/Pricing";
 import NotFound from "./pages/NotFound";
 import { Layout } from "./components/Layout";
 
@@ -63,7 +64,8 @@ const AppRoutes = () => {
       <Route path="/" element={<Landing />} />
       <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
       <Route path="/register" element={<PublicRoute><Register /></PublicRoute>} />
-      
+      <Route path="/pricing" element={<Pricing />} />
+
       {/* Protected Routes */}
       <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
       <Route path="/products" element={<ProtectedRoute><Products /></ProtectedRoute>} />
@@ -73,7 +75,7 @@ const AppRoutes = () => {
       <Route path="/simulator" element={<Navigate to="/simulations" replace />} />
       <Route path="/predictability" element={<Navigate to="/simulations" replace />} />
       <Route path="/insights" element={<ProtectedRoute><Insights /></ProtectedRoute>} />
-      
+
       {/* Catch-all */}
       <Route path="*" element={<NotFound />} />
     </Routes>

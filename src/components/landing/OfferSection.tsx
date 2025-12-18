@@ -35,7 +35,7 @@ const OfferSection = () => {
 
         <Link to="/register">
           <Button size="lg" className="text-lg px-8 py-6 bg-primary hover:bg-primary/90 shadow-glow">
-            QUERO Testar POR 30 DIAS
+            Testar
             <ArrowRight className="ml-2 w-5 h-5" />
           </Button>
         </Link>
