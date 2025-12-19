@@ -170,3 +170,11 @@ export interface ProductAlertResponse {
   message: string;
   severity: 'warning' | 'critical';
 }
+
+export interface UserResponse {
+  id: string;
+  email: string;
+  fullName: string;
+  phone: string | null;
+  createdAt: string;
+}

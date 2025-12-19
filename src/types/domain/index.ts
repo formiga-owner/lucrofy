@@ -7,82 +7,83 @@ export type MovementType = 'entrada' | 'saida';
 
 export type MovementReason = 'compra' | 'venda' | 'perda' | 'ajuste';
 
-export type StockStatus = 'healthy' | 'warning' | 'critical';
+export type StockStatus = 'saudavel' | 'alerta' | 'critico';
 
 // Base entity with common fields
 export interface BaseEntity {
   id: string;
-  created_at: string;
-  updated_at: string;
+  createdAt: string;
+  updatedAt: string;
 }
 
 // User Profile - Internal representation
 export interface Profile extends BaseEntity {
-  user_id: string;
-  full_name: string;
-  avatar_url: string | null;
-  business_name: string | null;
+  userId: string;
+  fullName: string;
+  avatarUrl: string | null;
+  email: string;
+  businessName: string | null;
   phone: string | null;
 }
 
 // User Role - Internal representation
 export interface UserRole {
   id: string;
-  user_id: string;
+  userId: string;
   role: AppRole;
 }
 
 // Product - Internal representation
 export interface Product extends BaseEntity {
-  user_id: string;
+  userId: string;
   name: string;
   description: string | null;
-  purchase_price: number;
-  sale_price: number | null;
-  desired_margin: number | null;
-  shipping_cost: number;
-  tax_cost: number;
-  commission_cost: number;
-  other_costs: number;
+  purchasePrice: number;
+  salePrice: number | null;
+  desiredMargin: number | null;
+  shippingCost: number;
+  taxCost: number;
+  commissionCost: number;
+  otherCosts: number;
   sku: string | null;
   barcode: string | null;
   category: string | null;
-  is_active: boolean;
+  isActive: boolean;
 }
 
 // Product Stock - Internal representation
 export interface ProductStock extends BaseEntity {
-  product_id: string;
-  current_stock: number;
-  minimum_stock: number;
-  maximum_stock: number | null;
+  productId: string;
+  currentStock: number;
+  minimumStock: number;
+  maximumStock: number | null;
   location: string | null;
 }
 
 // Stock Movement - Internal representation
 export interface StockMovement extends BaseEntity {
-  product_id: string;
-  user_id: string;
+  productId: string;
+  userId: string;
   type: MovementType;
   reason: MovementReason;
   quantity: number;
-  unit_price: number | null;
+  unitPrice: number | null;
   notes: string | null;
-  reference_id: string | null;
-  movement_date: string;
+  referenceId: string | null;
+  movementDate: string;
 }
 
 // Sale - Internal representation
 export interface Sale extends BaseEntity {
-  user_id: string;
-  product_id: string;
+  userId: string;
+  productId: string;
   quantity: number;
-  unit_price: number;
-  total_price: number;
-  cost_at_sale: number;
+  unitPrice: number;
+  totalPrice: number;
+  costAtSale: number;
   profit: number;
   margin: number;
-  sale_date: string;
-  customer_name: string | null;
+  saleDate: string;
+  customerName: string | null;
   notes: string | null;
 }
