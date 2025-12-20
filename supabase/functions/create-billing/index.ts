@@ -125,7 +125,7 @@ Deno.serve(async (req) => {
           price: priceInCents,
         },
       ],
-      returnUrl: `${req.headers.get('origin') || 'https://lucrofy.netlify.app'}/pricing?status=pending`,
+      returnUrl: `${req.headers.get('origin') || 'https://lucrofy.netlify.app'}/dashboard`,
       completionUrl: `${req.headers.get('origin') || 'https://lucrofy.netlify.app'}/dashboard?payment_status=success`,
       customer: {
         name: customer.name,
