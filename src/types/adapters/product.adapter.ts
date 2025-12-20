@@ -1,8 +1,18 @@
 import { Product } from '../domain';
-import { Tables } from '../../integrations/supabase/types';
 import { Mapper } from './index';
 
-type ProductRow = Tables<'products'>;
+// Tipo local enquanto as tabelas não existem no banco
+interface ProductRow {
+    id: string;
+    user_id: string;
+    name: string;
+    purchase_price: number;
+    sale_price: number | null;
+    desired_margin: number | null;
+    additional_costs: number | null;
+    created_at: string;
+    updated_at: string;
+}
 
 export const ProductAdapter: Mapper<Product, ProductRow> = {
     toDomain(row: ProductRow): Product {
@@ -10,29 +20,24 @@ export const ProductAdapter: Mapper<Product, ProductRow> = {
             id: row.id,
             userId: row.user_id,
             name: row.name,
-            description: null, // Not in DB
+            description: null,
             purchasePrice: Number(row.purchase_price),
             salePrice: row.sale_price ? Number(row.sale_price) : null,
             desiredMargin: row.desired_margin ? Number(row.desired_margin) : null,
-
-            // Aggregating back from single field 'additional_costs'
             shippingCost: 0,
             taxCost: 0,
             commissionCost: 0,
             otherCosts: row.additional_costs ? Number(row.additional_costs) : 0,
-
             sku: null,
             barcode: null,
             category: null,
-            isActive: true, // Defaulting to true as no status column
-
+            isActive: true,
             createdAt: row.created_at,
             updatedAt: row.updated_at,
         };
     },
 
     toPersistence(domain: Partial<Product>): ProductRow {
-        // Summing costs into additional_costs
         const additionalCosts = (domain.shippingCost || 0) +
             (domain.taxCost || 0) +
             (domain.commissionCost || 0) +
@@ -43,11 +48,11 @@ export const ProductAdapter: Mapper<Product, ProductRow> = {
             user_id: domain.userId!,
             name: domain.name || '',
             purchase_price: domain.purchasePrice || 0,
-            sale_price: domain.salePrice,
-            desired_margin: domain.desiredMargin,
+            sale_price: domain.salePrice ?? null,
+            desired_margin: domain.desiredMargin ?? null,
             additional_costs: additionalCosts,
-            created_at: domain.createdAt,
+            created_at: domain.createdAt || new Date().toISOString(),
             updated_at: new Date().toISOString(),
-        } as ProductRow;
+        };
     }
 };

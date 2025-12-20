@@ -1,1 +1,4 @@
 project_id = "splljyokmwsqgczjrvpo"
+
+[functions.create-billing]
+verify_jwt = false

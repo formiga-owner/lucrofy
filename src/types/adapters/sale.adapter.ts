@@ -1,15 +1,21 @@
 import { Sale } from '../domain';
-import { Tables } from '../../integrations/supabase/types';
 import { Mapper } from './index';
 
-type SaleRow = Tables<'sales'>;
+// Tipo local enquanto as tabelas não existem no banco
+interface SaleRow {
+    id: string;
+    user_id: string;
+    product_id: string;
+    quantity: number;
+    unit_price: number;
+    total_revenue: number;
+    total_profit: number;
+    sale_date: string;
+    created_at: string;
+}
 
 export const SaleAdapter: Mapper<Sale, SaleRow> = {
     toDomain(row: SaleRow): Sale {
-        // Re-calculating fields that might not be in DB but are in domain
-        // DB has: total_revenue, total_profit.
-        // Domain has: costAtSale, margin.
-
         return {
             id: row.id,
             userId: row.user_id,
@@ -17,15 +23,12 @@ export const SaleAdapter: Mapper<Sale, SaleRow> = {
             quantity: row.quantity,
             unitPrice: Number(row.unit_price),
             totalPrice: Number(row.total_revenue),
-            // Derived fields
             profit: Number(row.total_profit),
-            costAtSale: Number(row.total_revenue) - Number(row.total_profit), // approximate
+            costAtSale: Number(row.total_revenue) - Number(row.total_profit),
             margin: Number(row.total_revenue) > 0 ? (Number(row.total_profit) / Number(row.total_revenue)) * 100 : 0,
-
             saleDate: row.sale_date,
-            customerName: null, // Missing in DB
-            notes: null, // Missing in DB
-
+            customerName: null,
+            notes: null,
             createdAt: row.created_at,
             updatedAt: row.created_at,
         };
@@ -41,7 +44,7 @@ export const SaleAdapter: Mapper<Sale, SaleRow> = {
             total_revenue: domain.totalPrice || 0,
             total_profit: domain.profit || 0,
             sale_date: domain.saleDate || new Date().toISOString().split('T')[0],
-            created_at: domain.createdAt,
-        } as SaleRow;
+            created_at: domain.createdAt || new Date().toISOString(),
+        };
     }
 };
