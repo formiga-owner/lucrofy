@@ -15,6 +15,7 @@ import Simulations from "./pages/Simulations";
 import Insights from "./pages/Insights";
 import Pricing from "./pages/Pricing";
 import NotFound from "./pages/NotFound";
+import Account from "./pages/Account";
 import { Layout } from "./components/Layout";
 
 const queryClient = new QueryClient();
@@ -75,6 +76,7 @@ const AppRoutes = () => {
       <Route path="/simulator" element={<Navigate to="/simulations" replace />} />
       <Route path="/predictability" element={<Navigate to="/simulations" replace />} />
       <Route path="/insights" element={<ProtectedRoute><Insights /></ProtectedRoute>} />
+      <Route path="/account" element={<ProtectedRoute><Layout><Account /></Layout></ProtectedRoute>} />
 
       {/* Catch-all */}
       <Route path="*" element={<NotFound />} />

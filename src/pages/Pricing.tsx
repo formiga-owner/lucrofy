@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -56,6 +57,14 @@ const plans: Plan[] = [
 const Pricing = () => {
   const [selectedPlan, setSelectedPlan] = useState<Plan | null>(null);
   const [checkoutOpen, setCheckoutOpen] = useState(false);
+  const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (searchParams.get("status") === "success") {
+      navigate("/dashboard?payment_status=success");
+    }
+  }, [searchParams, navigate]);
 
   const handleSelectPlan = (plan: Plan) => {
     setSelectedPlan(plan);

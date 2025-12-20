@@ -96,13 +96,17 @@ export const Layout = ({ children }: LayoutProps) => {
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-56">
-                <DropdownMenuItem className="gap-2">
-                  <Settings className="w-4 h-4" />
-                  <span>Configurações</span>
+                <DropdownMenuItem className="gap-2" asChild>
+                  <Link to="/account" className="w-full cursor-pointer">
+                    <Settings className="w-4 h-4" />
+                    <span>Configurações</span>
+                  </Link>
                 </DropdownMenuItem>
-                <DropdownMenuItem className="gap-2">
-                  <CreditCard className="w-4 h-4" />
-                  <span>Conta & Plano</span>
+                <DropdownMenuItem className="gap-2" asChild>
+                  <Link to="/account" className="w-full cursor-pointer">
+                    <CreditCard className="w-4 h-4" />
+                    <span>Conta & Plano</span>
+                  </Link>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem className="gap-2 text-destructive" onClick={handleLogout}>
@@ -131,14 +135,18 @@ export const Layout = ({ children }: LayoutProps) => {
               <p className="px-3 py-2 text-sm text-muted-foreground">
                 Olá, <span className="font-medium text-foreground">{user?.name}</span>
               </p>
-              <Button variant="ghost" className="w-full justify-start gap-2" onClick={() => setIsMobileMenuOpen(false)}>
-                <Settings className="w-4 h-4" />
-                Configurações
-              </Button>
-              <Button variant="ghost" className="w-full justify-start gap-2" onClick={() => setIsMobileMenuOpen(false)}>
-                <CreditCard className="w-4 h-4" />
-                Conta & Plano
-              </Button>
+              <Link to="/account" onClick={() => setIsMobileMenuOpen(false)}>
+                <Button variant="ghost" className="w-full justify-start gap-2">
+                  <Settings className="w-4 h-4" />
+                  Configurações
+                </Button>
+              </Link>
+              <Link to="/account" onClick={() => setIsMobileMenuOpen(false)}>
+                <Button variant="ghost" className="w-full justify-start gap-2">
+                  <CreditCard className="w-4 h-4" />
+                  Conta & Plano
+                </Button>
+              </Link>
               <div className="border-t border-border pt-4 mt-2">
                 <Button variant="ghost" className="w-full justify-start gap-2 text-destructive" onClick={handleLogout}>
                   <LogOut className="w-4 h-4" />

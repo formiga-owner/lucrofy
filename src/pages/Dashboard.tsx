@@ -1,16 +1,18 @@
-import { Link } from 'react-router-dom';
+import { useEffect } from 'react';
+import { Link, useSearchParams } from 'react-router-dom';
+import { useToast } from '@/hooks/use-toast';
 import { Layout } from '@/components/Layout';
 import { StatCard } from '@/components/StatCard';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useProducts } from '@/hooks/useProducts';
 import { formatCurrency, formatPercentage } from '@/lib/calculations';
-import { 
-  TrendingUp, 
-  Package, 
-  PiggyBank, 
-  Plus, 
-  Calculator, 
+import {
+  TrendingUp,
+  Package,
+  PiggyBank,
+  Plus,
+  Calculator,
   Target,
   ArrowRight,
   BarChart3
@@ -18,6 +20,20 @@ import {
 
 const Dashboard = () => {
   const { products, stats, isLoading } = useProducts();
+  const [searchParams] = useSearchParams();
+  const { toast } = useToast();
+
+  useEffect(() => {
+    if (searchParams.get("payment_status") === "success") {
+      toast({
+        title: "Pagamento confirmado!",
+        description: "Seu plano Pro foi ativado com sucesso.",
+        duration: 5000,
+      });
+      // Limpar o parametro da URL sem recarregar a página
+      window.history.replaceState({}, '', '/dashboard');
+    }
+  }, [searchParams, toast]);
 
   const quickActions = [
     {
