@@ -1,8 +1,14 @@
 import { ProductStock } from '../domain';
-import { Tables } from '../../integrations/supabase/types';
 import { Mapper } from './index';
 
-type StockRow = Tables<'product_stocks'>;
+// Tipo local enquanto as tabelas não existem no banco
+interface StockRow {
+    id: string;
+    product_id: string;
+    current_stock: number;
+    minimum_stock: number;
+    updated_at: string;
+}
 
 export const StockAdapter: Mapper<ProductStock, StockRow> = {
     toDomain(row: StockRow): ProductStock {
@@ -11,9 +17,9 @@ export const StockAdapter: Mapper<ProductStock, StockRow> = {
             productId: row.product_id,
             currentStock: row.current_stock,
             minimumStock: row.minimum_stock,
-            maximumStock: null, // Not in DB
-            location: null, // Not in DB
-            createdAt: row.updated_at, // Using updated_at as proxy for base entity requirements
+            maximumStock: null,
+            location: null,
+            createdAt: row.updated_at,
             updatedAt: row.updated_at,
         };
     },
@@ -25,6 +31,6 @@ export const StockAdapter: Mapper<ProductStock, StockRow> = {
             current_stock: domain.currentStock || 0,
             minimum_stock: domain.minimumStock || 0,
             updated_at: new Date().toISOString(),
-        } as StockRow;
+        };
     }
 };
