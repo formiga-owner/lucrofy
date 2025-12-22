@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { CheckoutDialog } from "@/components/checkout/CheckoutDialog";
+import { useToast } from "@/hooks/use-toast";
 
 interface Plan {
   slug: string;
