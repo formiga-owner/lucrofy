@@ -59,12 +59,24 @@ const Pricing = () => {
   const [checkoutOpen, setCheckoutOpen] = useState(false);
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
+  const { toast } = useToast();
 
   useEffect(() => {
-    if (searchParams.get("status") === "success") {
-      navigate("/dashboard");
+    const status = searchParams.get("status");
+    const paymentStatus = searchParams.get("payment_status");
+
+    if (status === "success" || paymentStatus === "success") {
+      toast({
+        title: "Pagamento confirmado!",
+        description: "Redirecionando para o dashboard...",
+      });
+
+      // Redirecionar após mostrar o toast
+      setTimeout(() => {
+        navigate("/dashboard", { replace: true });
+      }, 1500);
     }
-  }, [searchParams, navigate]);
+  }, [searchParams, navigate, toast]);
 
   const handleSelectPlan = (plan: Plan) => {
     setSelectedPlan(plan);

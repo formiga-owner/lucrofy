@@ -23,29 +23,46 @@ const billingSchema = z.object({
 });
 
 Deno.serve(async (req) => {
+  const requestId = crypto.randomUUID();
+  console.log(`[${requestId}] ========== NEW REQUEST ==========`);
+  console.log(`[${requestId}] Method: ${req.method}`);
+  console.log(`[${requestId}] URL: ${req.url}`);
+
   // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
+    console.log(`[${requestId}] CORS preflight request`);
     return new Response(null, { headers: corsHeaders });
   }
 
   try {
+    console.log(`[${requestId}] Step 1: Checking environment variables...`);
     if (!ABACATEPAY_API_TOKEN) {
-      console.error('ABACATEPAY_API_TOKEN not configured');
+      console.error(`[${requestId}] ERROR: ABACATEPAY_API_TOKEN not configured`);
       throw new Error('Payment gateway not configured');
     }
+    console.log(`[${requestId}] ✓ ABACATEPAY_API_TOKEN configured`);
 
     // Initialize Supabase client with service role for user creation
+    console.log(`[${requestId}] Step 2: Initializing Supabase client...`);
     const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
     const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
-    const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
-    console.log('Processing checkout request...');
+    if (!supabaseUrl || !supabaseServiceKey) {
+      console.error(`[${requestId}] ERROR: Missing Supabase credentials`);
+      throw new Error('Supabase not configured');
+    }
+
+    const supabase = createClient(supabaseUrl, supabaseServiceKey);
+    console.log(`[${requestId}] ✓ Supabase client initialized`);
 
     // Parse Request Body Once
+    console.log(`[${requestId}] Step 3: Parsing request body...`);
     let body;
     try {
       body = await req.json();
-    } catch {
+      console.log(`[${requestId}] ✓ Body parsed:`, JSON.stringify(body, null, 2));
+    } catch (error) {
+      console.error(`[${requestId}] ERROR: Failed to parse JSON body:`, error);
       return new Response(
         JSON.stringify({ success: false, error: "Invalid JSON body" }),
         { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
@@ -53,10 +70,11 @@ Deno.serve(async (req) => {
     }
 
     // Validate with Zod
+    console.log(`[${requestId}] Step 4: Validating request data...`);
     const validation = billingSchema.safeParse(body);
 
     if (!validation.success) {
-      console.warn('Validação falhou:', validation.error.format());
+      console.error(`[${requestId}] ERROR: Validation failed:`, validation.error.format());
       return new Response(
         JSON.stringify({
           success: false,
@@ -66,12 +84,17 @@ Deno.serve(async (req) => {
         { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
+    console.log(`[${requestId}] ✓ Validation passed`);
 
     const { planSlug, planName, priceInCents, customer } = validation.data;
 
-    console.log('Creating billing for:', { planSlug, planName, priceInCents, customerEmail: customer.email });
+    console.log(`[${requestId}] Step 5: Processing billing request`);
+    console.log(`[${requestId}] Plan: ${planSlug} (${planName})`);
+    console.log(`[${requestId}] Price: ${priceInCents} cents`);
+    console.log(`[${requestId}] Customer: ${customer.email}`);
 
     // Find or create user profile based on email
+    console.log(`[${requestId}] Step 6: Finding or creating user...`);
     let userId: string;
 
     // Try to find existing profile by email
@@ -83,8 +106,9 @@ Deno.serve(async (req) => {
 
     if (existingProfile) {
       userId = existingProfile.user_id;
-      console.log('Found existing user:', userId);
+      console.log(`[${requestId}] ✓ Found existing user: ${userId}`);
     } else {
+      console.log(`[${requestId}] No existing user found, creating new user...`);
       // Create a new auth user for this customer
       const { data: authData, error: authError } = await supabase.auth.admin.createUser({
         email: customer.email,
@@ -96,7 +120,7 @@ Deno.serve(async (req) => {
       });
 
       if (authError || !authData.user) {
-        console.error('Error creating user:', authError);
+        console.error(`[${requestId}] ERROR creating user:`, authError);
         return new Response(
           JSON.stringify({ success: false, error: "Erro ao criar usuário" }),
           { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
@@ -104,9 +128,10 @@ Deno.serve(async (req) => {
       }
 
       userId = authData.user.id;
-      console.log('Created new user:', userId);
+      console.log(`[${requestId}] ✓ Created new user: ${userId}`);
 
       // Create profile
+      console.log(`[${requestId}] Creating profile for user...`);
       const { error: profileError } = await supabase
         .from('profiles')
         .insert({
@@ -117,13 +142,16 @@ Deno.serve(async (req) => {
         });
 
       if (profileError) {
-        console.error('Error creating profile:', profileError);
+        console.error(`[${requestId}] ERROR creating profile:`, profileError);
         // Continue anyway, profile might be created by trigger
+      } else {
+        console.log(`[${requestId}] ✓ Profile created`);
       }
     }
 
 
     // Get plan from database
+    console.log(`[${requestId}] Step 7: Fetching plan from database...`);
     const { data: plan, error: planError } = await supabase
       .from('plans')
       .select('*')
@@ -131,15 +159,17 @@ Deno.serve(async (req) => {
       .single();
 
     if (planError || !plan) {
-      console.error('Plan not found:', planSlug, planError);
+      console.error(`[${requestId}] ERROR: Plan not found:`, planSlug, planError);
       return new Response(
         JSON.stringify({ success: false, error: "Plano não encontrado" }),
         { status: 404, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
+    console.log(`[${requestId}] ✓ Plan found: ${plan.id} - ${plan.name}`);
 
 
     // Criar cobrança no AbacatePay
+    console.log(`[${requestId}] Step 8: Creating billing in AbacatePay...`);
     const billingPayload = {
       frequency: 'ONE_TIME',
       methods: ['PIX'],
@@ -167,7 +197,7 @@ Deno.serve(async (req) => {
       },
     };
 
-    console.log('Sending to AbacatePay:', JSON.stringify(billingPayload, null, 2));
+    console.log(`[${requestId}] Billing payload:`, JSON.stringify(billingPayload, null, 2));
 
     const response = await fetch(`${ABACATEPAY_API_URL}/billing/create`, {
       method: 'POST',
@@ -179,24 +209,28 @@ Deno.serve(async (req) => {
     });
 
     const responseText = await response.text();
-    console.log('AbacatePay response status:', response.status);
+    console.log(`[${requestId}] AbacatePay response status: ${response.status}`);
+    console.log(`[${requestId}] AbacatePay response body:`, responseText);
 
     let data;
     try {
       data = JSON.parse(responseText);
-    } catch {
-      console.error('Failed to parse AbacatePay response:', responseText);
+    } catch (error) {
+      console.error(`[${requestId}] ERROR: Failed to parse AbacatePay response:`, responseText);
       throw new Error(`Invalid response from gateway: ${responseText}`);
     }
 
     if (!response.ok || data.error) {
-      console.error('AbacatePay error:', data.error || responseText);
+      console.error(`[${requestId}] ERROR: AbacatePay error:`, data.error || responseText);
       throw new Error(data.error || `Payment gateway error: ${response.status}`);
     }
 
-    console.log('Billing created successfully:', data.data?.id);
+    console.log(`[${requestId}] ✓ Billing created successfully in AbacatePay`);
+    console.log(`[${requestId}] Billing ID: ${data.data?.id}`);
+    console.log(`[${requestId}] Payment URL: ${data.data?.url}`);
 
     // Save payment record to database with pending status
+    console.log(`[${requestId}] Step 9: Saving payment record to database...`);
     const { data: paymentRecord, error: paymentError } = await supabase
       .from('payments')
       .insert({
@@ -217,12 +251,16 @@ Deno.serve(async (req) => {
       .single();
 
     if (paymentError) {
-      console.error('Error saving payment record:', paymentError);
+      console.error(`[${requestId}] ERROR saving payment record:`, paymentError);
+      console.error(`[${requestId}] Payment error details:`, JSON.stringify(paymentError, null, 2));
       // Don't fail the request, just log the error
       // The webhook will create the payment record when confirmed
     } else {
-      console.log('Payment record created:', paymentRecord.id);
+      console.log(`[${requestId}] ✓ Payment record created: ${paymentRecord.id}`);
     }
+
+    console.log(`[${requestId}] Step 10: Sending success response...`);
+    console.log(`[${requestId}] ========== REQUEST COMPLETED SUCCESSFULLY ==========`);
 
     return new Response(
       JSON.stringify({
@@ -239,11 +277,15 @@ Deno.serve(async (req) => {
 
 
   } catch (error: any) {
-    console.error('Error in create-billing:', error);
+    console.error(`[${requestId}] ========== ERROR IN REQUEST ==========`);
+    console.error(`[${requestId}] Error type:`, error.constructor.name);
+    console.error(`[${requestId}] Error message:`, error.message);
+    console.error(`[${requestId}] Error stack:`, error.stack);
     return new Response(
       JSON.stringify({
         success: false,
         error: error.message || 'Failed to create billing',
+        requestId: requestId,
       }),
       {
         status: 500,
