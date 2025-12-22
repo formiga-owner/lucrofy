@@ -1,4 +1,4 @@
-import { z } from "zod";
+import { z } from "https://deno.land/x/zod@v3.22.4/mod.ts";
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.39.3';
 
 const ABACATEPAY_API_TOKEN = Deno.env.get('ABACATEPAY_API_TOKEN');
@@ -34,37 +34,12 @@ Deno.serve(async (req) => {
       throw new Error('Payment gateway not configured');
     }
 
-    // Initialize Supabase client
+    // Initialize Supabase client with service role for user creation
     const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
-    const supabaseAnonKey = Deno.env.get('SUPABASE_ANON_KEY')!;
+    const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
+    const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
-    // Get authorization header
-    const authHeader = req.headers.get('Authorization');
-    if (!authHeader) {
-      return new Response(
-        JSON.stringify({ success: false, error: "Unauthorized" }),
-        { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      );
-    }
-
-    const supabase = createClient(supabaseUrl, supabaseAnonKey, {
-      global: {
-        headers: { Authorization: authHeader },
-      },
-    });
-
-    // Get authenticated user
-    const { data: { user }, error: authError } = await supabase.auth.getUser();
-
-    if (authError || !user) {
-      console.error('Authentication error:', authError);
-      return new Response(
-        JSON.stringify({ success: false, error: "Unauthorized" }),
-        { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      );
-    }
-
-    console.log('Authenticated user:', user.id, user.email);
+    console.log('Processing checkout request...');
 
     // Parse Request Body Once
     let body;
@@ -94,7 +69,59 @@ Deno.serve(async (req) => {
 
     const { planSlug, planName, priceInCents, customer } = validation.data;
 
-    console.log('Creating billing for:', { planSlug, planName, priceInCents, customerEmail: customer.email, userId: user.id });
+    console.log('Creating billing for:', { planSlug, planName, priceInCents, customerEmail: customer.email });
+
+    // Find or create user profile based on email
+    let userId: string;
+
+    // Try to find existing profile by email
+    const { data: existingProfile } = await supabase
+      .from('profiles')
+      .select('user_id')
+      .eq('email', customer.email)
+      .single();
+
+    if (existingProfile) {
+      userId = existingProfile.user_id;
+      console.log('Found existing user:', userId);
+    } else {
+      // Create a new auth user for this customer
+      const { data: authData, error: authError } = await supabase.auth.admin.createUser({
+        email: customer.email,
+        email_confirm: true,
+        user_metadata: {
+          full_name: customer.name,
+          phone: customer.cellphone,
+        }
+      });
+
+      if (authError || !authData.user) {
+        console.error('Error creating user:', authError);
+        return new Response(
+          JSON.stringify({ success: false, error: "Erro ao criar usuário" }),
+          { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        );
+      }
+
+      userId = authData.user.id;
+      console.log('Created new user:', userId);
+
+      // Create profile
+      const { error: profileError } = await supabase
+        .from('profiles')
+        .insert({
+          user_id: userId,
+          email: customer.email,
+          full_name: customer.name,
+          phone: customer.cellphone,
+        });
+
+      if (profileError) {
+        console.error('Error creating profile:', profileError);
+        // Continue anyway, profile might be created by trigger
+      }
+    }
+
 
     // Get plan from database
     const { data: plan, error: planError } = await supabase
@@ -134,7 +161,7 @@ Deno.serve(async (req) => {
         taxId: customer.taxId,
       },
       metadata: {
-        userId: user.id,
+        userId: userId,
         planId: plan.id,
         planSlug: planSlug,
       },
@@ -173,7 +200,7 @@ Deno.serve(async (req) => {
     const { data: paymentRecord, error: paymentError } = await supabase
       .from('payments')
       .insert({
-        user_id: user.id,
+        user_id: userId,
         plan_id: plan.id,
         amount: priceInCents / 100, // Convert cents to currency
         currency: 'BRL',

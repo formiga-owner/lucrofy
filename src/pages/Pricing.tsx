@@ -62,7 +62,7 @@ const Pricing = () => {
 
   useEffect(() => {
     if (searchParams.get("status") === "success") {
-      navigate("/dashboard?payment_status=success");
+      navigate("/dashboard");
     }
   }, [searchParams, navigate]);
 
